@@ -1,0 +1,26 @@
+version: '3.7'
+
+services:
+  db:
+    restart: always
+    image: postgres:11.4
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=root
+      - POSTGRES_DB=bbcht
+    volumes:
+      - ./postgres-data/postgres:/var/lib/postgresql/data
+  
+  pgweb:
+    restart: always
+    image: sosedoff/pgweb
+    ports:
+      - 5433:8081
+    environment:
+      - DATABASE_URL=postgres://root:root@db:5432/bbcht?sslmode=disable
+    depends_on:
+      - db
+    healthcheck:
+      disable: true
