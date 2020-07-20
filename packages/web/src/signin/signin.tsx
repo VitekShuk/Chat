@@ -22,7 +22,7 @@ export default function SignIn({setPage}: Props) {
   const [password, setPassword] = useState<string>("")
 
   const signUpRequest = (): void => {
-    const uri = `http://localhost:5000/signin?login=${login}&password=${password}`
+    const uri = `http://ec2-52-27-242-143.us-west-2.compute.amazonaws.com/signin?login=${login}&password=${password}`
     fetch(uri, {
       method: 'POST',
     })

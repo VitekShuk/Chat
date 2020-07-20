@@ -70,7 +70,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const ENDPOINT = "http://localhost:5000";
+const ENDPOINT = "http://ec2-52-27-242-143.us-west-2.compute.amazonaws.com/";
 const socket = socketIOClient(ENDPOINT);
 socket.disconnect()
 

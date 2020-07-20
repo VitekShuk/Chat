@@ -7,6 +7,8 @@ import { RepositoriesModule } from './repositories/repositores.module';
 import { AppController } from './app.controller';
 import { EventsModule } from './events/events.module';
 import { MessagesModule } from './messages/messages.module';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { join } from 'path';
 
 @Module({
   imports: [ 
@@ -16,6 +18,9 @@ import { MessagesModule } from './messages/messages.module';
     RepositoriesModule,
     EventsModule,
     MessagesModule,
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..', 'client'),
+    }),
   ],
   controllers: [AppController],
   providers: [],

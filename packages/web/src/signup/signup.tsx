@@ -25,7 +25,7 @@ export default function SignUp({setPage}: Props) {
 
   const signUpRequest = (): void => {
     if (password === repeatPassword) {
-      const uri = `http://localhost:5000/signup?login=${login}&password=${password}`
+      const uri = `http://ec2-52-27-242-143.us-west-2.compute.amazonaws.com/signup?login=${login}&password=${password}`
       fetch(uri, {
         method: 'POST',
       })
