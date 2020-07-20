@@ -31,7 +31,7 @@ import { AuthService } from '../auth/auth.service';
       const arrayCookie = stringCookie.split("; ")
       const userToken = arrayCookie.find(item => item.indexOf("token=") != (-1)).split("=")[1]
       let jsonData = JSON.parse(data).data
-
+  
       return this.authService.getVerifyUser(userToken)
         .then((user: any): CreateMessageDto => { 
           jsonData.login = user.login

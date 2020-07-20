@@ -2,13 +2,16 @@ import { EntityRepository, Repository } from "typeorm"
 import { User } from '../users/user.entity';
 import { CreateUserDto } from '../users/dto/create-user.dto';
 import { LoginUserDto } from '../users/dto/user-login.dto';
+import * as bcrypt from 'bcryptjs';
 
 @EntityRepository(User)
 export class UserRepository extends Repository<User> {
-    signUp(createUserDto: CreateUserDto): Promise<any> {
+    async signUp(createUserDto: CreateUserDto): Promise<any> {
         const user = new User();
+        const password = createUserDto.password;
         user.login = createUserDto.login;
-        user.password = createUserDto.password;
+        user.salt = await bcrypt.genSalt()
+        user.password = await bcrypt.hash(password, user.salt)
 
         return this.save(user).then((user: User) => {
  
@@ -19,8 +22,8 @@ export class UserRepository extends Repository<User> {
     signIn(loginUserDto: LoginUserDto): Promise<any> {
         console.log("loginUserDto:", loginUserDto)
         const login = loginUserDto.login;
-        const password = loginUserDto.password;
-        const result = this.findOne({ login:  login}).then((user: User) => {
+        const result = this.findOne({ login:  login}).then(async (user: User) => {
+            const password = await bcrypt.hash(loginUserDto.password, user.salt)
             if (user && user.password === password) {
                 const { password, ...result } = user;
     

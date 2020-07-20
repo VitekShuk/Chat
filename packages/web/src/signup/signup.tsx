@@ -11,6 +11,7 @@ import Cookies from 'js-cookie';
 import Container from '@material-ui/core/Container';
 import Link from '@material-ui/core/Link';
 import {signIn, chat, useStyles} from '../App';
+import { url } from '../config/index';
 
 interface Props {
   setPage: React.Dispatch<React.SetStateAction<string>>
@@ -25,7 +26,7 @@ export default function SignUp({setPage}: Props) {
 
   const signUpRequest = (): void => {
     if (password === repeatPassword) {
-      const uri = `http://ec2-52-27-242-143.us-west-2.compute.amazonaws.com/signup?login=${login}&password=${password}`
+      const uri = `${url}signup?login=${login}&password=${password}`
       fetch(uri, {
         method: 'POST',
       })

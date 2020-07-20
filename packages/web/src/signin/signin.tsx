@@ -10,6 +10,7 @@ import Container from '@material-ui/core/Container';
 import Link from '@material-ui/core/Link';
 import {signUp, chat, useStyles} from '../App';
 import Cookies from 'js-cookie';
+import { url } from '../config/index';
 
 interface Props {
   setPage: React.Dispatch<React.SetStateAction<string>>
@@ -22,7 +23,7 @@ export default function SignIn({setPage}: Props) {
   const [password, setPassword] = useState<string>("")
 
   const signUpRequest = (): void => {
-    const uri = `http://ec2-52-27-242-143.us-west-2.compute.amazonaws.com/signin?login=${login}&password=${password}`
+    const uri = `${url}signin?login=${login}&password=${password}`
     fetch(uri, {
       method: 'POST',
     })

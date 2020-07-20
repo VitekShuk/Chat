@@ -20,6 +20,6 @@ export class MessagesService {
   }
 
   findAllMessages(): Promise<Message[]> {
-    return this.messageRepository.find({select: ["id", "text", "createdAt", "login"]});
+    return this.messageRepository.find();
   }
 }

@@ -16,6 +16,7 @@ import ChatIcon from '@material-ui/icons/Chat';
 import Cookies from 'js-cookie';
 import {signIn} from '../App';
 import { Box } from '@material-ui/core';
+import { url } from '../config/index';
 
 interface Props {
   setPage: React.Dispatch<React.SetStateAction<string>>
@@ -70,8 +71,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const ENDPOINT = "http://ec2-52-27-242-143.us-west-2.compute.amazonaws.com/";
-const socket = socketIOClient(ENDPOINT);
+const socket = socketIOClient(url);
 socket.disconnect()
 
 export default function Chat({setPage}: Props) {
