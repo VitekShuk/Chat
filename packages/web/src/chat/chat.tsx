@@ -1,92 +1,38 @@
-import React, { useEffect, useState, ReactElement } from 'react';
-import Avatar from '@material-ui/core/Avatar';
-import Button from '@material-ui/core/Button';
-import CssBaseline from '@material-ui/core/CssBaseline';
-import TextField from '@material-ui/core/TextField';
-import Grid from '@material-ui/core/Grid';
-import Typography from '@material-ui/core/Typography';
-import { makeStyles } from '@material-ui/core/styles';
-import Container from '@material-ui/core/Container';
-import socketIOClient from 'socket.io-client';
-import { format } from 'date-fns';
-import ru from 'date-fns/locale/ru';
-import parseISO from 'date-fns/parseISO';
+import React, { useEffect, useState, ReactElement } from "react"
+import Avatar from "@material-ui/core/Avatar"
+import Button from "@material-ui/core/Button"
+import CssBaseline from "@material-ui/core/CssBaseline"
+import TextField from "@material-ui/core/TextField"
+import Grid from "@material-ui/core/Grid"
+import Typography from "@material-ui/core/Typography"
+import Container from "@material-ui/core/Container"
+import socketIOClient from "socket.io-client"
 
-import ChatIcon from '@material-ui/icons/Chat';
-import Cookies from 'js-cookie';
-import {signIn} from '../App';
-import { Box } from '@material-ui/core';
-import { url } from '../config/index';
-
-interface Props {
-  setPage: React.Dispatch<React.SetStateAction<string>>
-}
-
-interface messageProps {
-  login: string
-  text: string
-  createdAt: string
-}
-
-const useStyles = makeStyles((theme) => ({
-  paper: {
-    marginTop: theme.spacing(8),
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    minWidth: "288px",
-  },
-  avatar: {
-    margin: theme.spacing(1),
-    backgroundColor: theme.palette.secondary.main,
-  },
-  form: {
-    width: '100%',
-    marginTop: theme.spacing(3),
-  },
-  submit: {
-    margin: theme.spacing(3, 0, 2),
-  },
-  buttonOut: {
-    position: 'absolute',
-  },
-  messageInfo: {
-    color: "rgba(0, 0, 0, 0.5)",
-  },
-  messageBox: {
-    overflowX: "hidden",
-    overflowY: "auto",
-  },
-  message: {
-    marginBottom: "14px",
-    marginLeft: "10px",
-    marginRight: "10px",
-    maxWidth: "458px",
-    wordWrap: "break-word",
-  },
-  userLogin: {
-    marginLeft: "auto",
-    marginRight: 0,
-    fontSize: 16,
-  },
-}));
+import ChatIcon from "@material-ui/icons/Chat"
+import Cookies from "js-cookie"
+import { PagesEnum } from "../enums/pages.enum"
+import { Box } from "@material-ui/core"
+import { url } from "../config/config"
+import { chatStyles } from "../styles/styles"
+import { pageProps, messageProps } from "../types/api"
+import { ButtonBase } from "../ui/button-base"
+import { MessageBox } from "../ui/message-box"
 
 const socket = socketIOClient(url);
 socket.disconnect()
 
-export default function Chat({setPage}: Props) {
-  const classes = useStyles();
-
-  socket.connect()
-
-  const [massage, setMessage] = useState<string>('')
+export const Chat = ({setPage}: pageProps): ReactElement => {
+  const classes = chatStyles();
+  const [massage, setMessage] = useState<string>("")
   const [messagesList, setMessagesList] = useState<messageProps[]>([])
   const userLogin = Cookies.get("userLogin")
+
+  socket.connect()
 
   const handleOut = (): void => {
     Cookies.set("token", "")
     Cookies.set("userLogin", "")
-    setPage(signIn)
+    setPage(PagesEnum.SIGNIN)
   }
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
@@ -95,7 +41,7 @@ export default function Chat({setPage}: Props) {
   }
 
   const sendMessage = (): void => {
-    socket.emit('events', JSON.stringify({ 
+    socket.emit("events", JSON.stringify({ 
       command: "createMessage", 
       data: {
         text: massage,
@@ -105,7 +51,7 @@ export default function Chat({setPage}: Props) {
   }
 
   useEffect((): (() => void) => {
-    socket.emit('messages', 
+    socket.emit("messages", 
       JSON.stringify({ command: "getAllMessages" }), 
       (data: any) => {
         setMessagesList(data)
@@ -117,25 +63,7 @@ export default function Chat({setPage}: Props) {
 
     return (): void => {socket.disconnect()};
   }, []);
-
-  const MessageBox = ({login, text, createdAt}: messageProps): ReactElement => {
-    const date = format(parseISO(createdAt), "Pp", {
-      locale: ru,
-    })
-
-    return (
-      <>
-        <Box className={classes.messageInfo}>
-          {`${date}, ${login}: `}
-        </Box>
-        <Box className={classes.message}>
-          {text}
-        </Box>
-      </>
-    )
-  }
   
-
   return (
     <Container
       component="main" 
@@ -196,15 +124,10 @@ export default function Chat({setPage}: Props) {
               />
             </Grid>
           </Grid>
-          <Button
-            fullWidth
-            variant="contained"
-            color="primary"
-            className={classes.submit}
-            onClick={sendMessage}
-          >
-            {"Send"}
-          </Button>
+          <ButtonBase 
+            buttonText={"Send"}
+            handleClick={sendMessage}
+          />
         </form>
       </div>
     </Container>

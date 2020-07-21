@@ -1,43 +1,31 @@
-import React, { useState } from 'react';
-import Avatar from '@material-ui/core/Avatar';
-import Button from '@material-ui/core/Button';
-import CssBaseline from '@material-ui/core/CssBaseline';
-import TextField from '@material-ui/core/TextField';
-import Grid from '@material-ui/core/Grid';
-import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
-import Typography from '@material-ui/core/Typography';
-import Cookies from 'js-cookie';
+import React, { useState, ReactElement } from "react"
+import Avatar from "@material-ui/core/Avatar"
+import CssBaseline from "@material-ui/core/CssBaseline"
+import TextField from "@material-ui/core/TextField"
+import Grid from "@material-ui/core/Grid"
+import LockOutlinedIcon from "@material-ui/icons/LockOutlined"
+import Typography from "@material-ui/core/Typography"
 
-import Container from '@material-ui/core/Container';
-import Link from '@material-ui/core/Link';
-import {signIn, chat, useStyles} from '../App';
-import { url } from '../config/index';
+import Container from "@material-ui/core/Container"
+import Link from "@material-ui/core/Link"
+import { PagesEnum } from "../enums/pages.enum"
+import { url, signup } from "../config/config"
+import { signStyles } from "../styles/styles"
+import { pageProps } from "../types/api"
+import { request } from "../common/common"
+import { ButtonBase } from "../ui/button-base"
 
-interface Props {
-  setPage: React.Dispatch<React.SetStateAction<string>>
-}
-
-export default function SignUp({setPage}: Props) {
-  const classes = useStyles();
-
+export const SignUp = ({setPage}: pageProps): ReactElement => {
+  const classes = signStyles()
   const [login, setLogin] = useState<string>("")
   const [password, setPassword] = useState<string>("")
   const [repeatPassword, setRepeatPassword] = useState<string>("")
+  const uri = `${url}${signup}?login=${login}&password=${password}`
 
   const signUpRequest = (): void => {
-    if (password === repeatPassword) {
-      const uri = `${url}signup?login=${login}&password=${password}`
-      fetch(uri, {
-        method: 'POST',
-      })
-        .then(response => response.json())
-        .then(json => { 
-          json.access_token && Cookies.set("token", json.access_token)
-          json.access_token && setPage(chat)
-          Cookies.set("userLogin", login)
-        });
-      }
-  } 
+    request({uri, login, setPage})
+  }
+
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
     const { value, name } = event.target
@@ -100,20 +88,15 @@ export default function SignUp({setPage}: Props) {
               />
             </Grid>
           </Grid>
-          <Button
-            fullWidth
-            variant="contained"
-            color="primary"
-            className={classes.submit}
-            onClick={signUpRequest}
-          >
-            {"Sign Up"}
-          </Button>
+          <ButtonBase 
+            buttonText={"Sign Up"}
+            handleClick={signUpRequest}
+          />
           <Grid container justify="flex-end">
             <Grid item>
               <Link 
                 variant="body2" 
-                onClick={(): void => setPage(signIn)} 
+                onClick={(): void => setPage(PagesEnum.SIGNIN)} 
                 style={{cursor: "pointer"}}
               >
                 {"Already have an account? Sign in"}
